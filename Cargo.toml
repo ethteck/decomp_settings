@@ -1,7 +1,12 @@
 [package]
 name = "decomp_settings"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
+authors = ["Ethan Roseman <ethteck@gmail.com>"]
+description = "Library for reading the decomp.yaml settings file"
+readme = "README.md"
+repository = "https://github.com/ethteck/decomp_settings"
+license = "MIT"
 
 [lib]
 name = "decomp_settings"
