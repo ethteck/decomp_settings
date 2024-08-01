@@ -1,0 +1,19 @@
+platform: n64
+frogress_project: pokemonsnap
+default_version: pokemonsnap # corresponds with shortname
+versions:
+  - name: Pokemon Snap US
+    shortname: pokemonsnap
+    frogress_version: us
+    paths:
+      baserom: "pokemonsnap.z64"
+      build: "build/pokemonsnap.z64"
+      nonmatchings: "asm/nonmatchings"
+      map: "build/pokemonsnap.map"
+      elf: "build/pokemonsnap.elf"
+    decompme:
+      preset: 125
+    permuter:
+      decompme_compilers:
+        tools/ido7.1/cc: ido7.1
+        tools/ido5.3/cc: ido5.3
