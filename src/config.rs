@@ -4,6 +4,8 @@ use std::collections::HashMap;
 use pyo3::prelude::*;
 use serde::Deserialize;
 
+use crate::error::DecompSettingsError;
+
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[cfg_attr(
@@ -73,9 +75,27 @@ pub struct Config {
     pub github: Option<String>,
     pub website: Option<String>,
     pub discord: Option<String>,
-    pub platform: String, // TODO maybe type
-    pub build_system: Option<String>,
+    pub platform: String,             // TODO maybe type
+    pub build_system: Option<String>, // TODO maybe type (make/ninja)
     pub frogress_project: Option<String>,
     pub default_version: Option<String>,
     pub versions: Vec<Version>,
+}
+
+impl Config {
+    #[cfg_attr(feature = "python_bindings", pyfunction)]
+    pub fn get_default_version(&self) -> Result<&Version, DecompSettingsError> {
+        if let Some(default_version) = self.default_version.clone() {
+            if let Some(version) = self.get_version_by_name(&default_version) {
+                return Ok(version);
+            }
+            return Err(DecompSettingsError::VersionNotFound(default_version));
+        }
+        return Err(DecompSettingsError::NoDefaultVersion);
+    }
+
+    #[cfg_attr(feature = "python_bindings", pyfunction)]
+    pub fn get_version_by_name(&self, version: &str) -> Option<&Version> {
+        self.versions.iter().find(|v| v.name == version)
+    }
 }

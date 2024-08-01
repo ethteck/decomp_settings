@@ -2,7 +2,7 @@ name: Pokemon Snap
 github: https://github.com/ethteck/pokemonsnap
 platform: n64
 frogress_project: pokemonsnap
-default_version: pokemonsnap # corresponds with shortname
+default_version: US # corresponds with shortname
 versions:
   - name: US
     shortname: pokemonsnap

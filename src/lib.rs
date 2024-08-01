@@ -81,8 +81,7 @@ mod tests {
 
     #[test]
     fn test_read_config() {
-        let result = read_config("test/decomp.yaml");
-        let config = result.unwrap();
+        let config = read_config("test/decomp.yaml").unwrap();
         assert_eq!(config.platform, "n64");
     }
 
@@ -94,7 +93,18 @@ mod tests {
 
     #[test]
     fn test_scan_for_config_from() {
-        let result = scan_for_config_from("test/subdir");
-        result.unwrap();
+        let config = scan_for_config_from("test/subdir").unwrap();
+        assert!(config.platform == "n64");
+    }
+
+    #[test]
+    fn test_get_default_version() {
+        let mut config = read_config("test/decomp.yaml").unwrap();
+        let version = config.get_default_version().unwrap();
+        assert_eq!(version.name, "US");
+
+        config.default_version = None;
+        let result = config.get_default_version();
+        assert!(result.is_err());
     }
 }
