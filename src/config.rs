@@ -91,7 +91,7 @@ impl Config {
             }
             return Err(DecompSettingsError::VersionNotFound(default_version));
         }
-        return Err(DecompSettingsError::NoDefaultVersion);
+        Err(DecompSettingsError::NoDefaultVersion)
     }
 
     pub fn get_version_by_name(&self, version: &str) -> Option<Version> {
