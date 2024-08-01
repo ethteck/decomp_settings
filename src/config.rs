@@ -82,9 +82,9 @@ pub struct Config {
     pub versions: Vec<Version>,
 }
 
+#[cfg_attr(feature = "python_bindings", pymethods)]
 impl Config {
-    #[cfg_attr(feature = "python_bindings", pyfunction)]
-    pub fn get_default_version(&self) -> Result<&Version, DecompSettingsError> {
+    pub fn get_default_version(&self) -> Result<Version, DecompSettingsError> {
         if let Some(default_version) = self.default_version.clone() {
             if let Some(version) = self.get_version_by_name(&default_version) {
                 return Ok(version);
@@ -94,8 +94,7 @@ impl Config {
         return Err(DecompSettingsError::NoDefaultVersion);
     }
 
-    #[cfg_attr(feature = "python_bindings", pyfunction)]
-    pub fn get_version_by_name(&self, version: &str) -> Option<&Version> {
-        self.versions.iter().find(|v| v.name == version)
+    pub fn get_version_by_name(&self, version: &str) -> Option<Version> {
+        self.versions.iter().find(|v| v.name == version).cloned()
     }
 }
