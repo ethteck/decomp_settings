@@ -11,11 +11,12 @@ use serde::Deserialize;
     pyclass(frozen, get_all, module = "decomp_settings")
 )]
 pub struct PathsOpts {
-    pub baserom: String,
-    pub build: String,
-    pub nonmatchings: String,
-    pub map: String,
-    pub elf: String,
+    pub baserom: Option<String>,
+    pub build: Option<String>,
+    pub asm: Option<String>,
+    pub nonmatchings: Option<String>,
+    pub map: Option<String>,
+    pub elf: Option<String>,
 }
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -68,6 +69,10 @@ pub struct Version {
     pyclass(frozen, get_all, module = "decomp_settings")
 )]
 pub struct Config {
+    pub name: String,
+    pub github: Option<String>,
+    pub website: Option<String>,
+    pub discord: Option<String>,
     pub platform: String, // TODO maybe type
     pub frogress_project: Option<String>,
     pub default_version: Option<String>,

@@ -1,13 +1,16 @@
+name: Pokemon Snap
+github: https://github.com/ethteck/pokemonsnap
 platform: n64
 frogress_project: pokemonsnap
 default_version: pokemonsnap # corresponds with shortname
 versions:
-  - name: Pokemon Snap US
+  - name: US
     shortname: pokemonsnap
     frogress_version: us
     paths:
       baserom: "pokemonsnap.z64"
       build: "build/pokemonsnap.z64"
+      asm: "asm"
       nonmatchings: "asm/nonmatchings"
       map: "build/pokemonsnap.map"
       elf: "build/pokemonsnap.elf"
