@@ -74,6 +74,7 @@ pub struct Config {
     pub website: Option<String>,
     pub discord: Option<String>,
     pub platform: String, // TODO maybe type
+    pub build_system: Option<String>,
     pub frogress_project: Option<String>,
     pub default_version: Option<String>,
     pub versions: Vec<Version>,
