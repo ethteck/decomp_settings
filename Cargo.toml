@@ -3,7 +3,12 @@ name = "decomp_settings"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "decomp_settings"
+crate-type = ["lib", "cdylib"]
+
 [dependencies]
 serde = { version = "1.0.204", features = ["derive"] }
 serde_yaml = "0.9.34"
 thiserror = "1.0.63"
+pyo3 = { version = "0.22.2", features = ["extension-module"] }

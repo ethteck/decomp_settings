@@ -5,12 +5,15 @@ use std::{fs::metadata, path::Path};
 
 use config::Config;
 use error::DecompSettingsError;
+use pyo3::prelude::*;
 
+#[pyfunction]
 pub fn scan_for_config() -> Result<Config, DecompSettingsError> {
     let path = std::env::current_dir().unwrap();
     scan_for_config_from(path.to_str().unwrap())
 }
 
+#[pyfunction]
 pub fn scan_for_config_from(start: &str) -> Result<Config, DecompSettingsError> {
     match metadata(start) {
         Ok(md) => {
@@ -43,6 +46,7 @@ pub fn scan_for_config_from(start: &str) -> Result<Config, DecompSettingsError> 
     Err(DecompSettingsError::ConfigNotFound(start.to_string()))
 }
 
+#[pyfunction]
 pub fn read_config(path: &str) -> Result<Config, DecompSettingsError> {
     let md = metadata(path);
     match md {
@@ -57,6 +61,15 @@ pub fn read_config(path: &str) -> Result<Config, DecompSettingsError> {
     }
     let config: Config = serde_yaml::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
     Ok(config)
+}
+
+#[pymodule]
+fn decomp_settings(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(scan_for_config, m)?)?;
+    m.add_function(wrap_pyfunction!(scan_for_config_from, m)?)?;
+    m.add_function(wrap_pyfunction!(read_config, m)?)?;
+    m.add_class::<Config>()?;
+    Ok(())
 }
 
 #[cfg(test)]
