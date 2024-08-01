@@ -1,4 +1,6 @@
+#[cfg(feature = "python_bindings")]
 use pyo3::exceptions::PyRuntimeError;
+#[cfg(feature = "python_bindings")]
 use pyo3::prelude::*;
 use thiserror::Error;
 
@@ -12,6 +14,7 @@ pub enum DecompSettingsError {
     ConfigScanError(String),
 }
 
+#[cfg(feature = "python_bindings")]
 impl std::convert::From<DecompSettingsError> for PyErr {
     fn from(err: DecompSettingsError) -> PyErr {
         PyRuntimeError::new_err(err.to_string())

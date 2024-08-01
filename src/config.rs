@@ -1,11 +1,15 @@
 use std::collections::HashMap;
 
+#[cfg(feature = "python_bindings")]
 use pyo3::prelude::*;
 use serde::Deserialize;
 
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-#[pyclass(frozen, get_all, module = "decomp_settings")]
+#[cfg_attr(
+    feature = "python_bindings",
+    pyclass(frozen, get_all, module = "decomp_settings")
+)]
 pub struct PathsOpts {
     pub baserom: String,
     pub build: String,
@@ -15,26 +19,38 @@ pub struct PathsOpts {
 }
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-#[pyclass(frozen, get_all, module = "decomp_settings")]
+#[cfg_attr(
+    feature = "python_bindings",
+    pyclass(frozen, get_all, module = "decomp_settings")
+)]
 pub struct DecompmeOpts {
     pub preset: usize,
 }
 
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-#[pyclass(frozen, get_all, module = "decomp_settings")]
+#[cfg_attr(
+    feature = "python_bindings",
+    pyclass(frozen, get_all, module = "decomp_settings")
+)]
 pub struct PermuterOpts {
     pub decompme_compilers: HashMap<String, String>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-#[pyclass(frozen, get_all, module = "decomp_settings")]
+#[cfg_attr(
+    feature = "python_bindings",
+    pyclass(frozen, get_all, module = "decomp_settings")
+)]
 pub struct M2cOpts {}
 
 #[derive(Clone, Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-#[pyclass(frozen, get_all, module = "decomp_settings")]
+#[cfg_attr(
+    feature = "python_bindings",
+    pyclass(frozen, get_all, module = "decomp_settings")
+)]
 pub struct Version {
     pub name: String,
     pub shortname: String,
@@ -47,7 +63,10 @@ pub struct Version {
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
-#[pyclass(frozen, get_all, module = "decomp_settings")]
+#[cfg_attr(
+    feature = "python_bindings",
+    pyclass(frozen, get_all, module = "decomp_settings")
+)]
 pub struct Config {
     pub platform: String, // TODO maybe type
     pub frogress_project: Option<String>,

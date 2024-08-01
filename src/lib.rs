@@ -5,15 +5,14 @@ use std::{fs::metadata, path::Path};
 
 use config::Config;
 use error::DecompSettingsError;
-use pyo3::prelude::*;
 
-#[pyfunction]
+#[cfg_attr(feature = "python_bindings", pyfunction)]
 pub fn scan_for_config() -> Result<Config, DecompSettingsError> {
     let path = std::env::current_dir().unwrap();
     scan_for_config_from(path.to_str().unwrap())
 }
 
-#[pyfunction]
+#[cfg_attr(feature = "python_bindings", pyfunction)]
 pub fn scan_for_config_from(start: &str) -> Result<Config, DecompSettingsError> {
     match metadata(start) {
         Ok(md) => {
@@ -46,7 +45,7 @@ pub fn scan_for_config_from(start: &str) -> Result<Config, DecompSettingsError> 
     Err(DecompSettingsError::ConfigNotFound(start.to_string()))
 }
 
-#[pyfunction]
+#[cfg_attr(feature = "python_bindings", pyfunction)]
 pub fn read_config(path: &str) -> Result<Config, DecompSettingsError> {
     let md = metadata(path);
     match md {
@@ -63,6 +62,10 @@ pub fn read_config(path: &str) -> Result<Config, DecompSettingsError> {
     Ok(config)
 }
 
+#[cfg(feature = "python_bindings")]
+use pyo3::prelude::*;
+
+#[cfg(feature = "python_bindings")]
 #[pymodule]
 fn decomp_settings(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(scan_for_config, m)?)?;
