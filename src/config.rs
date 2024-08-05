@@ -12,20 +12,7 @@ use crate::error::DecompSettingsError;
     feature = "python_bindings",
     pyclass(frozen, get_all, module = "decomp_settings")
 )]
-pub struct PathsOpts {
-    pub baserom: Option<String>,
-    pub build: Option<String>,
-    pub asm: Option<String>,
-    pub nonmatchings: Option<String>,
-    pub map: Option<String>,
-    pub elf: Option<String>,
-}
-#[derive(Clone, Debug, Deserialize)]
-#[serde(deny_unknown_fields)]
-#[cfg_attr(
-    feature = "python_bindings",
-    pyclass(frozen, get_all, module = "decomp_settings")
-)]
+/// Settings for the [decomp.me](https://decomp.me) platform
 pub struct DecompmeOpts {
     pub preset: usize,
 }
@@ -36,6 +23,7 @@ pub struct DecompmeOpts {
     feature = "python_bindings",
     pyclass(frozen, get_all, module = "decomp_settings")
 )]
+/// Settings for [decomp-permuter](https://github.com/simonlindholm/decomp-permuter)
 pub struct PermuterOpts {
     pub decompme_compilers: HashMap<String, String>,
 }
@@ -46,6 +34,7 @@ pub struct PermuterOpts {
     feature = "python_bindings",
     pyclass(frozen, get_all, module = "decomp_settings")
 )]
+/// Settings for [m2c](https://github.com/matt-kempster/m2c)
 pub struct M2cOpts {}
 
 #[derive(Clone, Debug, Deserialize)]
@@ -54,13 +43,23 @@ pub struct M2cOpts {}
     feature = "python_bindings",
     pyclass(frozen, get_all, module = "decomp_settings")
 )]
+/// Represents a single version of a project. A project can have one or several versions. For example, one might decompile the JP 1.0, JP 1.1, and US 1.1 versions of a game. These each would be a Version.
 pub struct Version {
+    /// The human-readable name of the version. Example: US 1.0
     pub name: String,
+    /// The a shorthand name for the version, meant to be easily memorable and typable. Example: us10
     pub shortname: String,
+    /// The sha1 hash of the target executable. This can be used by tools to ensure the correct executable is being worked with.
+    pub sha1: Option<String>,
+    /// The version slug as defined in the [frogress](https://github.com/decompals/frogress) database
     pub frogress_version: String,
-    pub paths: PathsOpts,
+    /// A map of path names to paths that tools may care about. Common paths would be baserom, asm, build, map, expected, etc.
+    pub paths: HashMap<String, String>,
+    /// Settings for the [decomp.me](https://decomp.me) platform
     pub decompme: Option<DecompmeOpts>,
+    /// Settings for [decomp-permuter](https://github.com/simonlindholm/decomp-permuter)
     pub permuter: Option<PermuterOpts>,
+    /// Settings for [m2c](https://github.com/matt-kempster/m2c)
     pub m2c: Option<M2cOpts>,
 }
 
@@ -70,15 +69,25 @@ pub struct Version {
     feature = "python_bindings",
     pyclass(frozen, get_all, module = "decomp_settings")
 )]
+/// The top-level configuration struct. This represents the entirety of the decomp.yaml format.
 pub struct Config {
+    /// Human-readable name of the project. Example: Paper Mario
     pub name: String,
+    /// The repository URL of the project
     pub github: Option<String>,
+    /// The website for the project
     pub website: Option<String>,
+    /// An invite link to the project's Discord server
     pub discord: Option<String>,
-    pub platform: String,             // TODO maybe type
+    /// The platform the project is for. Example: n64
+    pub platform: String, // TODO maybe type
+    /// The build system used by the project. Example: [ninja, make]
     pub build_system: Option<String>, // TODO maybe type (make/ninja)
+    /// The project slug as defined in the [frogress](https://github.com/decompals/frogress) database
     pub frogress_project: Option<String>,
+    /// The default Version of the project that tools should be considering
     pub default_version: Option<String>,
+    /// A list of all Versions inside the project
     pub versions: Vec<Version>,
 }
 

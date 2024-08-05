@@ -7,12 +7,14 @@ use config::Config;
 use error::DecompSettingsError;
 
 #[cfg_attr(feature = "python_bindings", pyfunction)]
+/// Looks for a configuration file named `decomp.yaml` starting from the current directory and going to all parent directories.
 pub fn scan_for_config() -> Result<Config, DecompSettingsError> {
     let path = std::env::current_dir().unwrap();
     scan_for_config_from(path.to_str().unwrap())
 }
 
 #[cfg_attr(feature = "python_bindings", pyfunction)]
+/// Looks for a configuration file named `decomp.yaml` starting from the given directory and going to all parent directories.
 pub fn scan_for_config_from(start: &str) -> Result<Config, DecompSettingsError> {
     match metadata(start) {
         Ok(md) => {
@@ -46,6 +48,7 @@ pub fn scan_for_config_from(start: &str) -> Result<Config, DecompSettingsError> 
 }
 
 #[cfg_attr(feature = "python_bindings", pyfunction)]
+/// Reads a configuration file from the given path.
 pub fn read_config(path: &str) -> Result<Config, DecompSettingsError> {
     let md = metadata(path);
     match md {
