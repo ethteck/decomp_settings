@@ -12,4 +12,7 @@ More shoon
 
 ## Library
 
-The settings library is written in Rust and will have Python bindings.
+The settings library is written in Rust and has Python bindings.
+
+![PyPI - Version](https://img.shields.io/pypi/v/decomp_settings)
+![Crates.io Version](https://img.shields.io/crates/v/decomp_settings?style=flat)
