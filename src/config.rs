@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 #[cfg(feature = "python_bindings")]
 use pyo3::prelude::*;
+
 use serde::Deserialize;
 
 #[derive(Clone, Debug, Deserialize)]
@@ -52,6 +53,16 @@ pub struct FrogressOpts {
 }
 
 #[derive(Clone, Debug, Deserialize)]
+#[cfg_attr(feature = "python_bindings", pyclass(module = "decomp_settings"))]
+pub struct AnyOpts(serde_yaml::Value);
+
+impl AnyOpts {
+    pub fn into_inner(self) -> serde_yaml::Value {
+        self.0
+    }
+}
+
+#[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(
     feature = "python_bindings",
     pyclass(frozen, get_all, module = "decomp_settings")
@@ -62,7 +73,7 @@ pub enum ToolOpts {
     Decompme(DecompmeOpts),
     Permuter(PermuterOpts),
     Frogress(FrogressOpts),
-    Other(serde_yaml::Value),
+    Other(AnyOpts),
 }
 
 #[derive(Clone, Debug, Deserialize)]

@@ -126,7 +126,8 @@ mod tests {
             panic!("Expected ToolOpts::Other, got {:?}", arbitrary_tool_enum);
         };
 
-        let arbitrary_tool: ArbitraryTool = serde_yaml::from_value(tool_value.clone()).unwrap();
+        let arbitrary_tool: ArbitraryTool =
+            serde_yaml::from_value(tool_value.clone().into_inner()).unwrap();
 
         assert_eq!(arbitrary_tool.meowp, 125);
         assert_eq!(arbitrary_tool.others[0].get("thing").unwrap().stuff, 1);
