@@ -82,6 +82,10 @@ fn decomp_settings(m: &Bound<'_, PyModule>) -> PyResult<()> {
 mod tests {
     use super::*;
 
+    use config::ToolOpts;
+    use serde::Deserialize;
+    use std::collections::HashMap;
+
     #[test]
     fn test_read_config() {
         let config = read_config("test/decomp.yaml").unwrap();
@@ -101,13 +105,31 @@ mod tests {
     }
 
     #[test]
-    fn test_get_default_version() {
-        let mut config = read_config("test/decomp.yaml").unwrap();
-        let version = config.get_default_version().unwrap();
-        assert_eq!(version.name, "US");
+    fn test_read_config_arbitrary_tool() {
+        // Example structs that would be defined in the tool's code
+        #[derive(Clone, Debug, Deserialize)]
+        struct Other {
+            stuff: usize,
+        }
 
-        config.default_version = None;
-        let result = config.get_default_version();
-        assert!(result.is_err());
+        #[derive(Clone, Debug, Deserialize)]
+        struct ArbitraryTool {
+            meowp: usize,
+            others: Vec<HashMap<String, Other>>,
+        }
+
+        let config = read_config("test/arbitrary_tool.yaml").unwrap();
+        let tools = config.tools.unwrap();
+        let arbitrary_tool_enum = tools.get("arbitrary_tool").unwrap();
+
+        let ToolOpts::Other(tool_value) = arbitrary_tool_enum else {
+            panic!("Expected ToolOpts::Other, got {:?}", arbitrary_tool_enum);
+        };
+
+        let arbitrary_tool: ArbitraryTool = serde_yaml::from_value(tool_value.clone()).unwrap();
+
+        assert_eq!(arbitrary_tool.meowp, 125);
+        assert_eq!(arbitrary_tool.others[0].get("thing").unwrap().stuff, 1);
+        assert_eq!(arbitrary_tool.others[1].get("thing2").unwrap().stuff, 2);
     }
 }

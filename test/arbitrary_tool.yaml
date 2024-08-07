@@ -1,0 +1,13 @@
+name: Pokemon Snap
+github: https://github.com/ethteck/pokemonsnap
+platform: n64
+versions:
+- name: us
+  fullname: US
+  paths:
+tools:
+  arbitrary_tool:
+    meowp: 125
+    others:
+    - thing: {stuff: 1}
+    - thing2: {stuff: 2}
