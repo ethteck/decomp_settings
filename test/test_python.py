@@ -1,0 +1,50 @@
+from dataclasses import dataclass
+import decomp_settings
+from decomp_settings import ToolOpts
+
+def test_read_config():
+    config = decomp_settings.read_config("test/decomp.yaml")
+    assert config.platform == "n64"
+
+def test_scan_for_config():
+    try:
+        config = decomp_settings.scan_for_config()
+    except Exception as e:
+        assert True
+        return
+    assert False, "Expected an exception"
+
+def test_scan_for_config_from():
+    config = decomp_settings.scan_for_config_from("test/subdir")
+    assert config.platform == "n64"
+
+def test_read_config_arbitrary_tool():
+
+    @dataclass
+    class Other():
+        stuff: int
+
+    @dataclass
+    class ArbitraryToolOpts():
+        meowp: int
+        others: list[dict[str, Other]]
+
+    config = decomp_settings.read_config("test/arbitrary_tool.yaml")
+    tools = config.tools
+    arbitrary_tool_enum = tools.get("arbitrary_tool")
+    assert isinstance(arbitrary_tool_enum, decomp_settings.ToolOpts.Other)
+
+    # Method where we just get the raw dict
+    arbitrary_tool = arbitrary_tool_enum.raw()
+    assert arbitrary_tool.get("meowp") == 125
+    assert arbitrary_tool.get("others")[0].get("thing").get("stuff") == 1
+    assert arbitrary_tool.get("others")[1].get("thing2").get("stuff") == 2
+
+    # Method where we convert the dict to a dataclass
+    arbitrary_tool_opts = ArbitraryToolOpts(**arbitrary_tool)
+    assert arbitrary_tool_opts.meowp == 125
+    # We still have to get "stuff" because we didn't create Others from the dict
+    assert arbitrary_tool_opts.others[0].get("thing").get("stuff") == 1
+    assert arbitrary_tool_opts.others[1].get("thing2").get("stuff") == 2
+
+    # TODO: Use https://github.com/konradhalas/dacite to convert the dict to a dataclass

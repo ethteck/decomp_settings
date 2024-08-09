@@ -3,6 +3,7 @@ use std::collections::HashMap;
 #[cfg(feature = "python_bindings")]
 use pyo3::prelude::*;
 
+use pyo3::types::{PyDict, PyList};
 use serde::Deserialize;
 
 #[derive(Clone, Debug, Deserialize)]
@@ -53,12 +54,58 @@ pub struct FrogressOpts {
 }
 
 #[derive(Clone, Debug, Deserialize)]
-#[cfg_attr(feature = "python_bindings", pyclass(module = "decomp_settings"))]
+#[cfg_attr(
+    feature = "python_bindings",
+    pyclass(frozen, module = "decomp_settings")
+)]
 pub struct AnyOpts(serde_yaml::Value);
 
 impl AnyOpts {
     pub fn into_inner(self) -> serde_yaml::Value {
         self.0
+    }
+}
+
+#[cfg_attr(feature = "python_bindings", pymethods)]
+impl ToolOpts {
+    pub fn raw(&self, py: Python<'_>) -> Py<PyAny> {
+        match self {
+            ToolOpts::Other(x) => x.to_object(py),
+            _ => py.None(),
+        }
+    }
+}
+
+impl ToPyObject for AnyOpts {
+    fn to_object(&self, py: Python<'_>) -> Py<PyAny> {
+        value_to_object(&self.0, py)
+    }
+}
+
+// https://stackoverflow.com/q/70193869
+fn value_to_object(val: &serde_yaml::Value, py: Python<'_>) -> Py<PyAny> {
+    match val {
+        serde_yaml::Value::Null => py.None(),
+        serde_yaml::Value::Bool(x) => x.to_object(py),
+        serde_yaml::Value::Number(x) => {
+            let oi64 = x.as_i64().map(|i| i.to_object(py));
+            let ou64 = x.as_u64().map(|i| i.to_object(py));
+            let of64 = x.as_f64().map(|i| i.to_object(py));
+            oi64.or(ou64).or(of64).expect("number too large")
+        }
+        serde_yaml::Value::String(x) => x.to_object(py),
+        serde_yaml::Value::Sequence(x) => {
+            let inner: Vec<_> = x.iter().map(|x| value_to_object(x, py)).collect();
+            inner.to_object(py)
+        }
+        serde_yaml::Value::Mapping(x) => {
+            let inner: HashMap<_, _> = x
+                .iter()
+                .map(|(k, v)| (k.as_str(), value_to_object(v, py)))
+                .collect();
+            inner.to_object(py)
+        }
+        serde_yaml::Value::Tagged(_) => py.None(), // ???
     }
 }
 

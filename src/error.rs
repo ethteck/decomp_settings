@@ -12,8 +12,6 @@ pub enum DecompSettingsError {
     ConfigReadError(String),
     #[error("Could not scan for config from {0} because it is a file")]
     ConfigScanError(String),
-    #[error("Version {0} not defined in config")]
-    VersionNotFound(String),
 }
 
 #[cfg(feature = "python_bindings")]
