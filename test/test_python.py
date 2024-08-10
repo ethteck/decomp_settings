@@ -34,6 +34,8 @@ def test_read_config_arbitrary_tool():
     arbitrary_tool_enum = tools.get("arbitrary_tool")
     assert isinstance(arbitrary_tool_enum, decomp_settings.ToolOpts.Other)
 
+    print(dir(arbitrary_tool_enum))
+
     # Method where we just get the raw dict
     arbitrary_tool = arbitrary_tool_enum.raw()
     assert arbitrary_tool.get("meowp") == 125

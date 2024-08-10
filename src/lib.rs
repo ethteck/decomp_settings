@@ -6,6 +6,9 @@ use std::{fs::metadata, path::Path};
 use config::Config;
 use error::DecompSettingsError;
 
+#[cfg(feature = "python_bindings")]
+use pyo3::prelude::*;
+
 #[cfg_attr(feature = "python_bindings", pyfunction)]
 /// Looks for a configuration file named `decomp.yaml` starting from the current directory and going to all parent directories.
 pub fn scan_for_config() -> Result<Config, DecompSettingsError> {
@@ -64,9 +67,6 @@ pub fn read_config(path: &str) -> Result<Config, DecompSettingsError> {
     let config: Config = serde_yaml::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
     Ok(config)
 }
-
-#[cfg(feature = "python_bindings")]
-use pyo3::prelude::*;
 
 #[cfg(feature = "python_bindings")]
 #[pymodule]

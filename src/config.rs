@@ -3,7 +3,6 @@ use std::collections::HashMap;
 #[cfg(feature = "python_bindings")]
 use pyo3::prelude::*;
 
-use pyo3::types::{PyDict, PyList};
 use serde::Deserialize;
 
 #[derive(Clone, Debug, Deserialize)]
@@ -68,7 +67,10 @@ impl AnyOpts {
 
 #[cfg_attr(feature = "python_bindings", pymethods)]
 impl ToolOpts {
+    #[cfg(feature = "python_bindings")]
     pub fn raw(&self, py: Python<'_>) -> Py<PyAny> {
+        use pyo3::prelude::*;
+
         match self {
             ToolOpts::Other(x) => x.to_object(py),
             _ => py.None(),
@@ -76,6 +78,7 @@ impl ToolOpts {
     }
 }
 
+#[cfg(feature = "python_bindings")]
 impl ToPyObject for AnyOpts {
     fn to_object(&self, py: Python<'_>) -> Py<PyAny> {
         value_to_object(&self.0, py)
@@ -83,6 +86,7 @@ impl ToPyObject for AnyOpts {
 }
 
 // https://stackoverflow.com/q/70193869
+#[cfg(feature = "python_bindings")]
 fn value_to_object(val: &serde_yaml::Value, py: Python<'_>) -> Py<PyAny> {
     match val {
         serde_yaml::Value::Null => py.None(),
