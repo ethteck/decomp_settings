@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, path::PathBuf};
 
 #[cfg(feature = "python_bindings")]
 use pyo3::prelude::*;
@@ -142,7 +142,7 @@ pub struct Version {
     /// The sha1 hash of the target executable. This can be used by tools to ensure the correct executable is being worked with.
     pub sha1: Option<String>,
     /// A map of path names to paths that tools may care about. Common paths would be baserom, asm, build, map, expected, etc.
-    pub paths: HashMap<String, String>,
+    pub paths: HashMap<String, PathBuf>,
 }
 
 #[derive(Debug, Deserialize)]
