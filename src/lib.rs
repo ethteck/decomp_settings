@@ -1,7 +1,7 @@
 pub mod config;
 pub mod error;
 
-use std::{fs::metadata, path::Path};
+use std::{fs::metadata, path::PathBuf};
 
 use config::Config;
 use error::DecompSettingsError;
@@ -13,55 +13,64 @@ use pyo3::prelude::*;
 /// Looks for a configuration file named `decomp.yaml` starting from the current directory and going to all parent directories.
 pub fn scan_for_config() -> Result<Config, DecompSettingsError> {
     let path = std::env::current_dir().unwrap();
-    scan_for_config_from(path.to_str().unwrap())
+    scan_for_config_from(path)
 }
 
 #[cfg_attr(feature = "python_bindings", pyfunction)]
 /// Looks for a configuration file named `decomp.yaml` starting from the given directory and going to all parent directories.
-pub fn scan_for_config_from(start: &str) -> Result<Config, DecompSettingsError> {
-    match metadata(start) {
+pub fn scan_for_config_from(start: PathBuf) -> Result<Config, DecompSettingsError> {
+    match metadata(start.clone()) {
         Ok(md) => {
             if !md.is_dir() {
-                return Err(DecompSettingsError::ConfigScanError(start.to_string()));
+                return Err(DecompSettingsError::ConfigScanError(
+                    start.display().to_string(),
+                ));
             }
         }
         Err(_) => {
-            return Err(DecompSettingsError::ConfigScanError(start.to_string()));
+            return Err(DecompSettingsError::ConfigScanError(
+                start.display().to_string(),
+            ));
         }
     }
 
-    let mut path: &Path = Path::new(start);
+    let mut path = start.clone();
 
     loop {
         let maybe_here = path.join("decomp.yaml");
 
         if let Ok(md) = metadata(&maybe_here) {
             if md.is_file() {
-                return read_config(maybe_here.to_str().unwrap());
+                return read_config(maybe_here);
             }
         }
 
         if path.parent().is_none() {
             break;
         }
-        path = path.parent().unwrap();
+        path = path.parent().unwrap().to_path_buf();
     }
 
-    Err(DecompSettingsError::ConfigNotFound(start.to_string()))
+    Err(DecompSettingsError::ConfigNotFound(
+        start.display().to_string(),
+    ))
 }
 
 #[cfg_attr(feature = "python_bindings", pyfunction)]
 /// Reads a configuration file from the given path.
-pub fn read_config(path: &str) -> Result<Config, DecompSettingsError> {
-    let md = metadata(path);
-    match md {
+pub fn read_config(path: PathBuf) -> Result<Config, DecompSettingsError> {
+    match metadata(path.clone()) {
         Ok(md) => {
             if !md.is_file() {
-                return Err(DecompSettingsError::ConfigReadError(path.to_string()));
+                return Err(DecompSettingsError::ConfigReadError(
+                    path.display().to_string(),
+                ));
             }
         }
         Err(_) => {
-            return Err(DecompSettingsError::ConfigReadError(path.to_string()));
+            return Err(DecompSettingsError::ConfigReadError(
+                path.display().to_string(),
+            ));
         }
     }
     let config: Config = serde_yaml::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
@@ -92,7 +101,7 @@ mod tests {
 
     #[test]
     fn test_read_config() {
-        let config = read_config("test/decomp.yaml").unwrap();
+        let config = read_config(PathBuf::from("test/decomp.yaml")).unwrap();
         assert_eq!(config.platform, "n64");
     }
 
@@ -104,7 +113,7 @@ mod tests {
 
     #[test]
     fn test_scan_for_config_from() {
-        let config = scan_for_config_from("test/subdir").unwrap();
+        let config = scan_for_config_from(PathBuf::from("test/subdir")).unwrap();
         assert!(config.platform == "n64");
     }
 
@@ -122,7 +131,7 @@ mod tests {
             others: Vec<HashMap<String, Other>>,
         }
 
-        let config = read_config("test/arbitrary_tool.yaml").unwrap();
+        let config = read_config(PathBuf::from("test/arbitrary_tool.yaml")).unwrap();
         let tools = config.tools.unwrap();
         let arbitrary_tool_enum = tools.get("arbitrary_tool").unwrap();
 
