@@ -41,7 +41,6 @@ def test_read_config_arbitrary_tool():
 
     # Method where we just get the raw dict
     arbitrary_tool = arbitrary_tool_enum.raw()
-    print(dir(arbitrary_tool))
     assert arbitrary_tool.get("meowp") == 125
     assert arbitrary_tool.get("others")[0].get("thing").get("stuff") == 1
     assert arbitrary_tool.get("others")[1].get("thing2").get("stuff") == 2
