@@ -1,31 +1,34 @@
 from dataclasses import dataclass
 import decomp_settings
-from decomp_settings import ToolOpts
+
 
 def test_read_config():
     config = decomp_settings.read_config("test/decomp.yaml")
     assert config.platform == "n64"
 
+
 def test_scan_for_config():
     try:
-        config = decomp_settings.scan_for_config()
-    except Exception as e:
+        decomp_settings.scan_for_config()
+    except Exception:
         assert True
         return
     assert False, "Expected an exception"
+
 
 def test_scan_for_config_from():
     config = decomp_settings.scan_for_config_from("test/subdir")
     assert config.platform == "n64"
 
+
 def test_read_config_arbitrary_tool():
 
     @dataclass
-    class Other():
+    class Other:
         stuff: int
 
     @dataclass
-    class ArbitraryToolOpts():
+    class ArbitraryToolOpts:
         meowp: int
         others: list[dict[str, Other]]
 
@@ -38,6 +41,7 @@ def test_read_config_arbitrary_tool():
 
     # Method where we just get the raw dict
     arbitrary_tool = arbitrary_tool_enum.raw()
+    print(dir(arbitrary_tool))
     assert arbitrary_tool.get("meowp") == 125
     assert arbitrary_tool.get("others")[0].get("thing").get("stuff") == 1
     assert arbitrary_tool.get("others")[1].get("thing2").get("stuff") == 2
