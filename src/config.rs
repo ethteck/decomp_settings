@@ -69,6 +69,22 @@ impl AnyOpts {
     }
 }
 
+#[cfg_attr(feature = "python_bindings", pymethods)]
+impl ToolOpts {
+    #[cfg(feature = "python_bindings")]
+    pub fn raw(&self, py: Python<'_>) -> Py<PyAny> {
+        use pyo3::prelude::*;
+
+        match self {
+            ToolOpts::Other(x) => match x.clone().into_pyobject(py) {
+                Ok(obj) => obj.into(),
+                Err(_) => py.None(),
+            },
+            _ => py.None(),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Deserialize)]
 #[cfg_attr(
     feature = "python_bindings",
