@@ -1,4 +1,8 @@
-use std::{collections::HashMap, path::PathBuf};
+use std::{
+    collections::HashMap,
+    fmt::{Display, Formatter},
+    path::PathBuf,
+};
 
 #[cfg(feature = "python_bindings")]
 use pyo3::prelude::*;
@@ -143,6 +147,12 @@ pub struct Version {
     pub sha1: Option<String>,
     /// A map of path names to paths that tools may care about. Common paths would be baserom, asm, build, map, expected, etc.
     pub paths: HashMap<String, PathBuf>,
+}
+
+impl Display for Version {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("{}", self.fullname))
+    }
 }
 
 #[derive(Debug, Deserialize)]

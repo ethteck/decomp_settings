@@ -1,7 +1,7 @@
 [package]
 name = "decomp_settings"
-version = "0.0.7"
-edition = "2021"
+version = "0.0.8"
+edition = "2024"
 authors = ["Ethan Roseman <ethteck@gmail.com>"]
 description = "Library for reading the decomp.yaml settings file"
 readme = "README.md"
@@ -13,10 +13,10 @@ name = "decomp_settings"
 crate-type = ["lib", "cdylib"]
 
 [dependencies]
-serde = { version = "1.0.208", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
 serde_yaml = "0.9.34"
-thiserror = "1.0.63"
-pyo3 = { version = "0.22.2", features = ["extension-module"], optional = true }
+thiserror = "2"
+pyo3 = { version = "0.25.0", features = ["extension-module"], optional = true }
 
 [features]
 python_bindings = ["dep:pyo3"]

@@ -1,7 +1,7 @@
 [project]
 name = "decomp_settings"
 # Version should be synced with lib/Cargo.toml
-version = "0.0.7"
+version = "0.0.8"
 description = "A library for reading the decomp.yaml settings file"
 requires-python = ">=3.9"
 dependencies = [
