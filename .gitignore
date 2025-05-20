@@ -1,7 +1,9 @@
 /target
 __pycache__/
 
-dist/
+/dist/
+/.venv/
+/venv/
 
 # Added by cargo
 #

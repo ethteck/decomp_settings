@@ -6,12 +6,12 @@ def scan_for_config() -> Config:
     Looks for a configuration file named `decomp.yaml` starting from the current directory and going to all parent directories.
     """
 
-def scan_for_config_from(start: Path) -> Config:
+def scan_for_config_from(start: Path | str) -> Config:
     """
     Looks for a configuration file named `decomp.yaml` starting from the given directory and going to all parent directories.
     """
 
-def read_config(path: Path) -> Config:
+def read_config(path: Path | str) -> Config:
     """
     Reads a configuration file from the given path.
     """
@@ -73,7 +73,7 @@ class Version:
     """
     The sha1 hash of the target executable. This can be used by tools to ensure the correct executable is being worked with.
     """
-    paths: dict[str, Path]
+    paths: dict[str, str]
     """
     A map of path names to paths that tools may care about. Common paths would be baserom, asm, build, map, expected, etc.
     """
@@ -83,7 +83,10 @@ class ToolOpts:
     Represents a tool and its settings
     """
 
-    # TODO: enum variants
+    class Decompme: ...
+    class Permuter: ...
+    class Frogress: ...
+    class Other: ...
 
     def raw(self) -> Any|None: ...
 
