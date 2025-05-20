@@ -1,6 +1,10 @@
 /target
 __pycache__/
 
+/dist/
+/.venv/
+/venv/
+
 # Added by cargo
 #
 # already existing elements were commented out

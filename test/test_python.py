@@ -34,13 +34,16 @@ def test_read_config_arbitrary_tool():
 
     config = decomp_settings.read_config("test/arbitrary_tool.yaml")
     tools = config.tools
+    assert tools is not None
     arbitrary_tool_enum = tools.get("arbitrary_tool")
+    assert arbitrary_tool_enum is not None
     assert isinstance(arbitrary_tool_enum, decomp_settings.ToolOpts.Other)
 
     print(dir(arbitrary_tool_enum))
 
     # Method where we just get the raw dict
     arbitrary_tool = arbitrary_tool_enum.raw()
+    assert isinstance(arbitrary_tool, dict)
     assert arbitrary_tool.get("meowp") == 125
     assert arbitrary_tool.get("others")[0].get("thing").get("stuff") == 1
     assert arbitrary_tool.get("others")[1].get("thing2").get("stuff") == 2
