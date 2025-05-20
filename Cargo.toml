@@ -6,7 +6,7 @@ authors = ["Ethan Roseman <ethteck@gmail.com>"]
 description = "Library for reading the decomp.yaml settings file"
 readme = "README.md"
 repository = "https://github.com/ethteck/decomp_settings"
-license = "MIT"
+license = "MIT OR Apache-2.0"
 
 [lib]
 name = "decomp_settings"

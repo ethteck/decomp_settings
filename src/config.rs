@@ -210,3 +210,9 @@ impl Config {
         self.versions.iter().find(|v| v.name == version).cloned()
     }
 }
+
+impl Display for Config {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("{}", self.name))
+    }
+}
