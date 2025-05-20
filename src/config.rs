@@ -5,7 +5,10 @@ use std::{
 };
 
 #[cfg(feature = "python_bindings")]
-use pyo3::prelude::*;
+use pyo3::{
+    prelude::*,
+    types::{PyDict, PyList},
+};
 
 use serde::Deserialize;
 
@@ -72,48 +75,68 @@ impl AnyOpts {
 #[cfg_attr(feature = "python_bindings", pymethods)]
 impl ToolOpts {
     #[cfg(feature = "python_bindings")]
-    pub fn raw(&self, py: Python<'_>) -> Py<PyAny> {
-        use pyo3::prelude::*;
-
+    pub fn raw(&self, py: Python<'_>) -> PyResult<PyObject> {
         match self {
-            ToolOpts::Other(x) => x.to_object(py),
-            _ => py.None(),
+            ToolOpts::Other(x) => Ok(x.into_pyobject(py)?.unbind()),
+            _ => Ok(py.None()),
         }
     }
 }
 
 #[cfg(feature = "python_bindings")]
-impl ToPyObject for AnyOpts {
-    fn to_object(&self, py: Python<'_>) -> Py<PyAny> {
-        value_to_object(&self.0, py)
+impl<'a, 'py> IntoPyObject<'py> for &'a AnyOpts {
+    type Target = PyAny;
+    type Output = Bound<'py, PyAny>;
+    type Error = PyErr;
+
+    fn into_pyobject(self, py: Python<'py>) -> PyResult<Self::Output> {
+        let py_object: PyObject = value_to_object(&self.0, py)?;
+        Ok(py_object.into_bound(py))
     }
 }
 
 // https://stackoverflow.com/q/70193869
 #[cfg(feature = "python_bindings")]
-fn value_to_object(val: &serde_yaml::Value, py: Python<'_>) -> Py<PyAny> {
+fn value_to_object(val: &serde_yaml::Value, py: Python<'_>) -> PyResult<PyObject> {
+    use pyo3::IntoPyObjectExt;
+
     match val {
-        serde_yaml::Value::Null => py.None(),
-        serde_yaml::Value::Bool(x) => x.to_object(py),
-        serde_yaml::Value::Number(x) => {
-            let oi64 = x.as_i64().map(|i| i.to_object(py));
-            let ou64 = x.as_u64().map(|i| i.to_object(py));
-            let of64 = x.as_f64().map(|i| i.to_object(py));
-            oi64.or(ou64).or(of64).expect("number too large")
+        serde_yaml::Value::Null => Ok(py.None()),
+        serde_yaml::Value::Bool(b) => b.into_py_any(py),
+        serde_yaml::Value::Number(n) => {
+            if let Some(i) = n.as_i64() {
+                i.into_py_any(py)
+            } else if let Some(u) = n.as_u64() {
+                u.into_py_any(py)
+            } else if let Some(f) = n.as_f64() {
+                f.into_py_any(py)
+            } else {
+                Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
+                    "Failed to convert YAML number to Python number",
+                ))
+            }
         }
-        serde_yaml::Value::String(x) => x.to_object(py),
-        serde_yaml::Value::Sequence(x) => {
-            let inner: Vec<_> = x.iter().map(|x| value_to_object(x, py)).collect();
-            inner.to_object(py)
+        serde_yaml::Value::String(s) => s.into_py_any(py),
+        serde_yaml::Value::Sequence(seq) => {
+            let list = PyList::empty(py);
+            for item_val in seq {
+                list.append(value_to_object(item_val, py)?)?;
+            }
+            Ok(list.into())
         }
-        serde_yaml::Value::Mapping(x) => {
-            let inner: HashMap<_, _> = x
-                .iter()
-                .map(|(k, v)| (k.as_str(), value_to_object(v, py)))
-                .collect();
-            inner.to_object(py)
+        serde_yaml::Value::Mapping(map) => {
+            let dict = PyDict::new(py);
+            for (key_val, value_val) in map {
+                let py_key = match key_val.as_str() {
+                    Some(s) => s.into_py_any(py),
+                    None => value_to_object(key_val, py),
+                }?;
+                let py_value = value_to_object(value_val, py)?;
+                dict.set_item(py_key, py_value)?;
+            }
+            dict.into_py_any(py)
         }
-        serde_yaml::Value::Tagged(_) => py.None(), // ???
+        serde_yaml::Value::Tagged(tagged_value) => value_to_object(&tagged_value.value, py),
     }
 }
 
