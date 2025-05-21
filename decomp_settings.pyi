@@ -92,7 +92,7 @@ class VersionPaths:
     ## Examples
 
     ```
-    target: "config/us/baserom_uncompressed.us.z64"
+    target: "config/us/baserom_decompressed.us.z64"
     ```
     """
 
@@ -125,7 +125,7 @@ class VersionPaths:
     ## Examples
 
     ```
-    compiled_target: "build/us/drmario64.us.z64"
+    compiled_target: "build/us/drmario64_uncompressed.us.z64"
     ```
     """
 
@@ -176,6 +176,28 @@ class VersionPaths:
 
     ```
     nonmatchings: "asm/rev0/nonmatchings"
+    ```
+    """
+
+    compressed_target: str | None
+    """
+    Path to the original target binary before decompression, if any.
+
+    ## Examples
+
+    ```
+    compressed_target: "config/usa/rom_original.z64"
+    ```
+    """
+
+    compressed_compiled_target: str | None
+    """
+    Path to the compressed binary produced by the build system, if any.
+
+    ## Examples
+
+    ```
+    compressed_compiled_target: "build/usa/compressed_rom.z64"
     ```
     """
 

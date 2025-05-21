@@ -194,7 +194,7 @@ pub struct VersionPaths {
     /// ## Examples
     ///
     /// ```yaml
-    /// target: "config/us/baserom_uncompressed.us.z64"
+    /// target: "config/us/baserom_decompressed.us.z64"
     /// ```
     target: PathBuf,
 
@@ -219,7 +219,7 @@ pub struct VersionPaths {
     /// ## Examples
     ///
     /// ```yaml
-    /// compiled_target: "build/us/drmario64.us.z64"
+    /// compiled_target: "build/us/drmario64_uncompressed.us.z64"
     /// ```
     compiled_target: PathBuf,
     /// Path to the intermediary ELF file generated during the build, if any.
@@ -262,6 +262,23 @@ pub struct VersionPaths {
     /// nonmatchings: "asm/rev0/nonmatchings"
     /// ```
     nonmatchings: PathBuf,
+
+    /// Path to the original target binary before decompression, if any.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// compressed_target: "config/usa/rom_original.z64"
+    /// ```
+    compressed_target: Option<PathBuf>,
+    /// Path to the compressed binary produced by the build system, if any.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// compressed_compiled_target: "build/usa/compressed_rom.z64"
+    /// ```
+    compressed_compiled_target: Option<PathBuf>,
 }
 
 #[derive(Debug, Deserialize)]
