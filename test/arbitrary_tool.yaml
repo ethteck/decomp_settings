@@ -5,6 +5,18 @@ versions:
 - name: us
   fullname: US
   paths:
+    target: "pokemonsnap.z64"
+
+    build_dir: "build"
+    map: "build/pokemonsnap.map"
+    compiled_target: "build/pokemonsnap.z64"
+    elf: "build/pokemonsnap.elf"
+
+    expected_dir: "expected/"
+
+    asm: "asm"
+    nonmatchings: "asm/nonmatchings"
+
 tools:
   arbitrary_tool:
     meowp: 125
