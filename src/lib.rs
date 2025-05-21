@@ -80,14 +80,18 @@ pub fn read_config(path: PathBuf) -> Result<Config, DecompSettingsError> {
 #[cfg(feature = "python_bindings")]
 #[pymodule]
 fn decomp_settings(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    use config::{AnyOpts, ToolOpts};
+    use config::{AnyOpts, ToolOpts, Version, VersionPaths};
 
     m.add_function(wrap_pyfunction!(scan_for_config, m)?)?;
     m.add_function(wrap_pyfunction!(scan_for_config_from, m)?)?;
     m.add_function(wrap_pyfunction!(read_config, m)?)?;
+
     m.add_class::<Config>()?;
+    m.add_class::<Version>()?;
+    m.add_class::<VersionPaths>()?;
     m.add_class::<ToolOpts>()?;
     m.add_class::<AnyOpts>()?;
+
     Ok(())
 }
 
