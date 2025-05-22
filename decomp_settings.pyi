@@ -140,7 +140,7 @@ class VersionPaths:
     ```
     """
 
-    expected_dir: str
+    expected_dir: str | None
     """
     Directory containing the expected files used for comparison.
 
@@ -153,7 +153,7 @@ class VersionPaths:
     ```
     """
 
-    asm: str
+    asm: str | None
     """
     Directory containing disassembled assembly files.
 
@@ -168,7 +168,7 @@ class VersionPaths:
     ```
     """
 
-    nonmatchings: str
+    nonmatchings: str | None
     """
     Directory containing functions or files that have not yet been matched to the original binary.
 

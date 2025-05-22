@@ -239,7 +239,7 @@ pub struct VersionPaths {
     /// ```yaml
     /// expected_dir: "expected/"
     /// ```
-    pub expected_dir: PathBuf,
+    pub expected_dir: Option<PathBuf>,
 
     /// Directory containing disassembled assembly files.
     ///
@@ -252,7 +252,7 @@ pub struct VersionPaths {
     /// ```yaml
     /// asm: "asm/rev0/"
     /// ```
-    pub asm: PathBuf,
+    pub asm: Option<PathBuf>,
     /// Directory containing functions or files that have not yet been matched to the original binary.
     ///
     /// ## Examples
@@ -260,7 +260,7 @@ pub struct VersionPaths {
     /// ```yaml
     /// nonmatchings: "asm/rev0/nonmatchings"
     /// ```
-    pub nonmatchings: PathBuf,
+    pub nonmatchings: Option<PathBuf>,
 
     /// Path to the original target binary before decompression, if any.
     ///
