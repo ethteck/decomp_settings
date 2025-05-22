@@ -25,7 +25,7 @@ class Config:
     """
     Human-readable name of the project. Example: Paper Mario
     """
-    github: str | None
+    repo: str | None
     """
     The repository URL of the project
     """
@@ -88,7 +88,7 @@ class ToolOpts:
     class Frogress: ...
     class Other: ...
 
-    def raw(self) -> Any|None: ...
+    def raw(self) -> Any | None: ...
 
 class DecompmeOpts:
     """

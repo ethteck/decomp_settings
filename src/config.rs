@@ -189,7 +189,7 @@ pub struct Config {
     /// Human-readable name of the project. Example: Paper Mario
     pub name: String,
     /// The repository URL of the project
-    pub github: Option<String>,
+    pub repo: Option<String>,
     /// The website for the project
     pub website: Option<String>,
     /// An invite link to the project's Discord server
