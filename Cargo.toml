@@ -1,6 +1,6 @@
 [package]
 name = "decomp_settings"
-version = "0.0.8"
+version = "0.0.9"
 edition = "2024"
 authors = ["Ethan Roseman <ethteck@gmail.com>"]
 description = "Library for reading the decomp.yaml settings file"
