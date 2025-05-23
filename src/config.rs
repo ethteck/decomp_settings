@@ -84,7 +84,7 @@ impl ToolOpts {
 }
 
 #[cfg(feature = "python_bindings")]
-impl<'a, 'py> IntoPyObject<'py> for &'a AnyOpts {
+impl<'py> IntoPyObject<'py> for &AnyOpts {
     type Target = PyAny;
     type Output = Bound<'py, PyAny>;
     type Error = PyErr;
@@ -168,14 +168,116 @@ pub struct Version {
     pub fullname: String,
     /// The sha1 hash of the target executable. This can be used by tools to ensure the correct executable is being worked with.
     pub sha1: Option<String>,
-    /// A map of path names to paths that tools may care about. Common paths would be baserom, asm, build, map, expected, etc.
-    pub paths: HashMap<String, PathBuf>,
+    /// A list of paths that tools may care about.
+    pub paths: VersionPaths,
 }
 
 impl Display for Version {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("{}", self.fullname,))
     }
+}
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[cfg_attr(
+    feature = "python_bindings",
+    pyclass(frozen, get_all, module = "decomp_settings")
+)]
+/// Represents the set of important file and directory paths associated with a project version.
+///
+/// Each field corresponds to a specific artifact or directory relevant to decomp tools.
+pub struct VersionPaths {
+    /// Path to the original target binary (e.g., the ROM or executable to decompile). Usually called "baserom" by many projects.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// target: "config/us/baserom_decompressed.us.z64"
+    /// ```
+    pub target: PathBuf,
+
+    /// Directory where build artifacts are generated.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// build_dir: "build/ntsc-u/"
+    /// ```
+    pub build_dir: PathBuf,
+    /// Path to the map file generated during the build.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// map: "build/us/drmario64.us.map"
+    /// ```
+    pub map: PathBuf,
+    /// Path to the binary produced by the project's build system.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// compiled_target: "build/us/drmario64_uncompressed.us.z64"
+    /// ```
+    pub compiled_target: PathBuf,
+    /// Path to the intermediary ELF file generated during the build, if any.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// elf: "build/pokemonsnap.elf"
+    /// ```
+    pub elf: Option<PathBuf>,
+
+    /// Directory containing the expected files used for comparison.
+    ///
+    /// Many projects simply put a copy of their `build` directory inside this expected directory.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// expected_dir: "expected/"
+    /// ```
+    pub expected_dir: Option<PathBuf>,
+
+    /// Directory containing disassembled assembly files.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// asm: "asm/"
+    /// ```
+    ///
+    /// ```yaml
+    /// asm: "asm/rev0/"
+    /// ```
+    pub asm: Option<PathBuf>,
+    /// Directory containing functions or files that have not yet been matched to the original binary.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// nonmatchings: "asm/rev0/nonmatchings"
+    /// ```
+    pub nonmatchings: Option<PathBuf>,
+
+    /// Path to the original target binary before decompression, if any.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// compressed_target: "config/usa/rom_original.z64"
+    /// ```
+    pub compressed_target: Option<PathBuf>,
+    /// Path to the compressed binary produced by the build system, if any.
+    ///
+    /// ## Examples
+    ///
+    /// ```yaml
+    /// compressed_compiled_target: "build/usa/compressed_rom.z64"
+    /// ```
+    pub compressed_compiled_target: Option<PathBuf>,
 }
 
 #[derive(Debug, Deserialize)]

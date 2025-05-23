@@ -6,12 +6,18 @@ versions:
   fullname: US
   sha1: edc7c49cc568c045fe48be0d18011c30f393cbaf
   paths:
-    baserom: "pokemonsnap.z64"
-    build: "build/pokemonsnap.z64"
+    target: "pokemonsnap.z64"
+
+    build_dir: "build"
+    map: "build/pokemonsnap.map"
+    compiled_target: "build/pokemonsnap.z64"
+    elf: "build/pokemonsnap.elf"
+
+    expected_dir: "expected/"
+
     asm: "asm"
     nonmatchings: "asm/nonmatchings"
-    map: "build/pokemonsnap.map"
-    elf: "build/pokemonsnap.elf"
+
 tools:
   decompme:
     preset: 125

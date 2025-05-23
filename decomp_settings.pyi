@@ -73,10 +73,134 @@ class Version:
     """
     The sha1 hash of the target executable. This can be used by tools to ensure the correct executable is being worked with.
     """
-    paths: dict[str, str]
+    paths: VersionPaths
     """
-    A map of path names to paths that tools may care about. Common paths would be baserom, asm, build, map, expected, etc.
+    A list of paths that tools may care about.
     """
+
+class VersionPaths:
+    """
+    Represents the set of important file and directory paths associated with a project version.
+
+    Each field corresponds to a specific artifact or directory relevant to decomp tools.
+    """
+
+    target: str
+    """
+    Path to the original target binary (e.g., the ROM or executable to decompile). Usually called "baserom" by many projects.
+
+    ## Examples
+
+    ```
+    target: "config/us/baserom_decompressed.us.z64"
+    ```
+    """
+
+    build_dir: str
+    """
+    Directory where build artifacts are generated.
+
+    ## Examples
+
+    ```
+    build_dir: "build/ntsc-u/"
+    ```
+    """
+
+    map: str
+    """
+    Path to the map file generated during the build.
+
+    ## Examples
+
+    ```
+    map: "build/us/drmario64.us.map"
+    ```
+    """
+
+    compiled_target: str
+    """
+    Path to the binary produced by the project's build system.
+
+    ## Examples
+
+    ```
+    compiled_target: "build/us/drmario64_uncompressed.us.z64"
+    ```
+    """
+
+    elf: str | None
+    """
+    Path to the intermediary ELF file generated during the build, if any.
+
+    ## Examples
+
+    ```
+    elf: "build/pokemonsnap.elf"
+    ```
+    """
+
+    expected_dir: str | None
+    """
+    Directory containing the expected files used for comparison.
+
+    Many projects simply put a copy of their `build` directory inside this expected directory.
+
+    ## Examples
+
+    ```
+    expected_dir: "expected/"
+    ```
+    """
+
+    asm: str | None
+    """
+    Directory containing disassembled assembly files.
+
+    ## Examples
+
+    ```
+    asm: "asm/"
+    ```
+
+    ```
+    asm: "asm/rev0/"
+    ```
+    """
+
+    nonmatchings: str | None
+    """
+    Directory containing functions or files that have not yet been matched to the original binary.
+
+    ## Examples
+
+    ```
+    nonmatchings: "asm/rev0/nonmatchings"
+    ```
+    """
+
+    compressed_target: str | None
+    """
+    Path to the original target binary before decompression, if any.
+
+    ## Examples
+
+    ```
+    compressed_target: "config/usa/rom_original.z64"
+    ```
+    """
+
+    compressed_compiled_target: str | None
+    """
+    Path to the compressed binary produced by the build system, if any.
+
+    ## Examples
+
+    ```
+    compressed_compiled_target: "build/usa/compressed_rom.z64"
+    ```
+    """
+
 
 class ToolOpts:
     """
