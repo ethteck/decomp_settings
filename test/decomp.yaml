@@ -28,5 +28,5 @@ tools:
   frogress:
     project: pokemonsnap
     versions:
-      us: # corresponds with top-level version snames
+      us: # corresponds with top-level version names
         version: us
