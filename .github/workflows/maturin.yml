@@ -61,10 +61,9 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out ../dist -i python${{ matrix.platform.python_version_min }} python3.14t pypy3.9 pypy3.10 pypy3.11
+          args: --release --out dist -i python${{ matrix.platform.python_version_min }} python3.14t pypy3.9 pypy3.10 pypy3.11
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: auto
-          working-directory: lib/
       - name: Upload wheels
         uses: actions/upload-artifact@main
         with:
@@ -137,10 +136,9 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out ../dist -i python${{ matrix.platform.python_version_min }} python3.14t pypy3.9 pypy3.10 pypy3.11
+          args: --release --out dist -i python${{ matrix.platform.python_version_min }} python3.14t pypy3.9 pypy3.10 pypy3.11
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
           manylinux: musllinux_1_2
-          working-directory: lib/
       - name: Upload wheels
         uses: actions/upload-artifact@main
         with:
@@ -183,9 +181,8 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out ../dist -i python${{ matrix.platform.python_version_min }} python3.14t
+          args: --release --out dist -i python${{ matrix.platform.python_version_min }} python3.14t
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
-          working-directory: lib/
       - name: Upload wheels
         uses: actions/upload-artifact@main
         with:
@@ -233,9 +230,8 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          args: --release --out ../dist -i python${{ matrix.platform.python_version_min }} python3.14t pypy3.9 pypy3.10 pypy3.11
+          args: --release --out dist -i python${{ matrix.platform.python_version_min }} python3.14t pypy3.9 pypy3.10 pypy3.11
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
-          working-directory: lib/
       - name: Upload wheels
         uses: actions/upload-artifact@main
         with:
@@ -272,8 +268,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out ../dist
-          working-directory: lib/
+          args: --out dist
       - name: Upload sdist
         uses: actions/upload-artifact@main
         with:
