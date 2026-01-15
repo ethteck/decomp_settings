@@ -39,10 +39,10 @@ pub fn scan_for_config_from(start: PathBuf) -> Result<Config, DecompSettingsErro
     loop {
         let maybe_here = path.join("decomp.yaml");
 
-        if let Ok(md) = metadata(&maybe_here) {
-            if md.is_file() {
-                return read_config(maybe_here);
-            }
+        if let Ok(md) = metadata(&maybe_here)
+            && md.is_file()
+        {
+            return read_config(maybe_here);
         }
 
         if path.parent().is_none() {
