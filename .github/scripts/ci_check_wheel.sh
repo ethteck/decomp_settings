@@ -22,6 +22,7 @@ set -e
 rm -rf .venv
 uv venv --no-project -p $PYTHON_VERSION $EXTRA
 # Allows us to check we are actually using the requested Python version.
+# --no-sync avoids building the wheel from source
 uv run --no-sync python --version
 
 # We install the wheel by looking it up in the dist folder.
