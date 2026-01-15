@@ -16,7 +16,7 @@ crate-type = ["lib", "cdylib"]
 serde = { version = "1", features = ["derive"] }
 serde_yaml = "0.9.34"
 thiserror = "2"
-pyo3 = { version = "0.25.0", features = ["extension-module"], optional = true }
+pyo3 = { version = "0.25.0", features = ["extension-module", "abi3"], optional = true }
 
 [features]
 python_bindings = ["dep:pyo3"]
