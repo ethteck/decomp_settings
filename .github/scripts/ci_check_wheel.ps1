@@ -29,5 +29,12 @@ if ($EXTRA) {
 }
 
 uv run python --version
-uv pip install --no-cache --no-config $(Get-ChildItem -Path .\dist\ -Recurse -Filter "decomp_settings-*-abi3-*")
+
+$WHEEL = $(Get-ChildItem -Path .\dist\ -Recurse -Filter "decomp_settings-*-abi3-*")
+if ([string]::IsNullOrEmpty($WHEEL)) {
+    Write-Host "Wheel not found"
+    exit 1
+}
+uv pip install --no-cache --no-config $WHEEL
+
 uv run python -c "import decomp_settings; print(help(decomp_settings.scan_for_config))"

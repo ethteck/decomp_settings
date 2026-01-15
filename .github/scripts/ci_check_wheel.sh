@@ -27,6 +27,11 @@ uv run python --version
 # We install the wheel by looking it up in the dist folder.
 # We need to do a `find` command here because we don't know the exact name of
 # the wheel (it can be affected by package version, arch, python version, etc.).
-uv pip install --no-cache --no-config $(find ./dist/ -name "decomp_settings-*-$KEY*")
+WHEEL=$(find ./dist/ -name "decomp_settings-*-$KEY*")
+if [ -z "$WHEEL" ]; then
+    echo "Wheel not found"
+    exit 1
+fi
+uv pip install --no-cache --no-config "$WHEEL"
 # Check something basic to make sure it was installed correctly.
 uv run python -c "import decomp_settings; print(help(decomp_settings.scan_for_config))"
