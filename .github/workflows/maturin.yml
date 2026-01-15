@@ -175,11 +175,18 @@ jobs:
       # Python versions failing randomly.
       # The workaround is to install each version separately.
       # https://github.com/actions/setup-python/issues/1241
-      - uses: actions/setup-python@v6
-        with:
-          python-version: |
-            3.14t
-          architecture: ${{ matrix.platform.python_arch }}
+      #- uses: actions/setup-python@v6
+      #  with:
+      #    python-version: |
+      #      3.14t
+      #    architecture: ${{ matrix.platform.python_arch }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Setup 3.14t
+        run: |
+          uv python install 3.14t --default
+
       - uses: actions/setup-python@v6
         with:
           python-version: |
@@ -198,9 +205,6 @@ jobs:
           path: dist
           if-no-files-found: error
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        if: ${{ matrix.platform.target == 'x64' }}
       - name: Test wheels with min version (${{ matrix.platform.python_version_min }})
         if: ${{ matrix.platform.target == 'x64' }}
         # Check the built wheel is installable on the oldest Python supported
@@ -210,6 +214,11 @@ jobs:
         if: ${{ matrix.platform.target == 'x64' }}
         run: |
           .github/scripts/ci_check_wheel.ps1 ${{ matrix.platform.python_version_max }} abi3 --managed-python
+
+      - name: Test free threaded wheels
+        if: ${{ matrix.platform.target == 'x64' }}
+        run: |
+          .github/scripts/ci_check_wheel.sh 3.14t cp314t --managed-python
 
   macos:
     runs-on: ${{ matrix.platform.runner }}
