@@ -22,7 +22,7 @@ set -e
 rm -rf .venv
 uv venv --no-project -p $PYTHON_VERSION $EXTRA
 # Allows us to check we are actually using the requested Python version.
-uv run python --version
+uv run --no-sync python --version
 
 # We install the wheel by looking it up in the dist folder.
 # We need to do a `find` command here because we don't know the exact name of
@@ -34,4 +34,4 @@ if [ -z "$WHEEL" ]; then
 fi
 uv pip install --no-cache --no-config "$WHEEL"
 # Check something basic to make sure it was installed correctly.
-uv run python -c "import decomp_settings; print(help(decomp_settings.scan_for_config))"
+uv run --no-sync python -c "import decomp_settings; print(help(decomp_settings.scan_for_config))"

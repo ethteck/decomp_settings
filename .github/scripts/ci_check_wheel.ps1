@@ -28,7 +28,7 @@ if ($EXTRA) {
     uv venv --no-project .venv -p $PYTHON_VERSION
 }
 
-uv run python --version
+uv run --no-sync python --version
 
 $WHEEL = $(Get-ChildItem -Path .\dist\ -Recurse -Filter "decomp_settings-*-abi3-*")
 if ([string]::IsNullOrEmpty($WHEEL)) {
@@ -37,4 +37,4 @@ if ([string]::IsNullOrEmpty($WHEEL)) {
 }
 uv pip install --no-cache --no-config $WHEEL
 
-uv run python -c "import decomp_settings; print(help(decomp_settings.scan_for_config))"
+uv run --no-sync python -c "import decomp_settings; print(help(decomp_settings.scan_for_config))"
