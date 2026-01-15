@@ -164,28 +164,13 @@ jobs:
             python_arch: x86
             python_version_min: '3.7'
             python_version_max: '3.14'
-          - runner: windows-11-arm
-            target: aarch64
-            python_arch: arm64
-            python_version_min: '3.11'
-            python_version_max: '3.14'
     steps:
       - uses: actions/checkout@main
-      # Windows ARM seems to be kinda broken making the installation of some
-      # Python versions failing randomly.
-      # The workaround is to install each version separately.
-      # https://github.com/actions/setup-python/issues/1241
-      - run: python --version
-      - uses: actions/setup-python@v6
-        with:
-          python-version: |
-            3.14t
-          architecture: ${{ matrix.platform.python_arch }}
-
       - uses: actions/setup-python@v6
         with:
           python-version: |
             ${{ matrix.platform.python_version_min }}
+            3.14t
           architecture: ${{ matrix.platform.python_arch }}
       - name: Build wheels
         uses: PyO3/maturin-action@v1
@@ -214,6 +199,49 @@ jobs:
         if: ${{ matrix.platform.target == 'x64' }}
         run: |
           .github/scripts/ci_check_wheel.sh 3.14t cp314t --managed-python
+
+  # Windows ARM is kinda broken, for some reason it can't setup Python 3.14t,
+  # so I gave up trying, hopefully nobody will be using ARM Windows with 3.14t
+  windows_arm:
+    runs-on: ${{ matrix.platform.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - runner: windows-11-arm
+            target: aarch64
+            python_arch: arm64
+            python_version_min: '3.11'
+            python_version_max: '3.14'
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: |
+            ${{ matrix.platform.python_version_min }}
+          architecture: ${{ matrix.platform.python_arch }}
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.platform.target }}
+          args: --release --out dist -i python${{ matrix.platform.python_version_min }}
+          sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      - name: Upload wheels
+        uses: actions/upload-artifact@main
+        with:
+          name: wheels-windows-${{ matrix.platform.target }}
+          path: dist
+          if-no-files-found: error
+
+      - name: Test wheels with min version (${{ matrix.platform.python_version_min }})
+        if: ${{ matrix.platform.target == 'x64' }}
+        # Check the built wheel is installable on the oldest Python supported
+        run: |
+          .github/scripts/ci_check_wheel.ps1 ${{ matrix.platform.python_version_min }} abi3
+      - name: Test wheels with max version (${{ matrix.platform.python_version_max }})
+        if: ${{ matrix.platform.target == 'x64' }}
+        run: |
+          .github/scripts/ci_check_wheel.ps1 ${{ matrix.platform.python_version_max }} abi3 --managed-python
 
   macos:
     runs-on: ${{ matrix.platform.runner }}
@@ -312,7 +340,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' }}
-    needs: [linux, musllinux, windows, macos, sdist, check_clippy_python_bindings]
+    needs: [linux, musllinux, windows, windows_arm, macos, sdist, check_clippy_python_bindings]
     permissions:
       # Use to sign the release artifacts
       id-token: write
