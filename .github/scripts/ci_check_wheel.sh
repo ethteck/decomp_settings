@@ -20,8 +20,7 @@ set -e
 
 # We make a venv with the Python version we were told to.
 rm -rf .venv
-uv venv -p $PYTHON_VERSION $EXTRA
-source .venv/bin/activate
+uv venv --no-project -p $PYTHON_VERSION $EXTRA
 # Allows us to check we are actually using the requested Python version.
 uv run python --version
 

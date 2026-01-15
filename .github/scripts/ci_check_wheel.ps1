@@ -23,12 +23,11 @@ if (Test-Path ".venv") {
 # uv, so we need to explicitly check the argument and only pass it if it is not
 # empty to avoid uv from erroring
 if ($EXTRA) {
-    uv venv .venv -p $PYTHON_VERSION $EXTRA
+    uv venv --no-project .venv -p $PYTHON_VERSION $EXTRA
 } else {
-    uv venv .venv -p $PYTHON_VERSION
+    uv venv --no-project .venv -p $PYTHON_VERSION
 }
 
-.\.venv\Scripts\Activate.ps1
 uv run python --version
 uv pip install $(Get-ChildItem -Path .\dist\ -Recurse -Filter "decomp_settings-*-abi3-*")
 uv run python -c "import decomp_settings; print(help(decomp_settings.scan_for_config))"
