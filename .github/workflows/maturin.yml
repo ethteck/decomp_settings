@@ -178,12 +178,12 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: |
-            ${{ matrix.platform.python_version_min }}
+            3.14t
           architecture: ${{ matrix.platform.python_arch }}
       - uses: actions/setup-python@v6
         with:
           python-version: |
-            3.14t
+            ${{ matrix.platform.python_version_min }}
           architecture: ${{ matrix.platform.python_arch }}
       - name: Build wheels
         uses: PyO3/maturin-action@v1
