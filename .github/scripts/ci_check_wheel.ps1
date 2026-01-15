@@ -29,5 +29,5 @@ if ($EXTRA) {
 }
 
 uv run python --version
-uv pip install $(Get-ChildItem -Path .\dist\ -Recurse -Filter "decomp_settings-*-abi3-*")
+uv pip install --no-cache --no-config $(Get-ChildItem -Path .\dist\ -Recurse -Filter "decomp_settings-*-abi3-*")
 uv run python -c "import decomp_settings; print(help(decomp_settings.scan_for_config))"

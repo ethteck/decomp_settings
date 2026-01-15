@@ -195,10 +195,10 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
-        if: ${{ matrix.platform.target == 'x86' }}
+        if: ${{ matrix.platform.target == 'x64' }}
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
-        if: ${{ matrix.platform.target == 'x86' }}
+        if: ${{ matrix.platform.target == 'x64' }}
       - name: Test wheels with min version (${{ matrix.platform.python_version_min }})
         if: ${{ matrix.platform.target == 'x64' }}
         # Check the built wheel is installable on the oldest Python supported
