@@ -78,7 +78,7 @@ pub fn read_config(path: PathBuf) -> Result<Config, DecompSettingsError> {
 }
 
 #[cfg(feature = "python_bindings")]
-#[pymodule]
+#[pymodule(gil_used = false)]
 fn decomp_settings(m: &Bound<'_, PyModule>) -> PyResult<()> {
     use config::{AnyOpts, ToolOpts, Version, VersionPaths};
 
