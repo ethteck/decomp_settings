@@ -342,7 +342,6 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch' }}
     needs: [linux, musllinux, windows, windows_arm, macos, sdist, check_clippy_python_bindings]
     permissions:
       # Use to sign the release artifacts
